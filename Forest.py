@@ -21,6 +21,13 @@ class Forest(tk.Frame):
     self.__root.configure(background="chartreuse4")
     tk.Frame.__init__(self, self.__root)
 
+    self.__button = tk.Button(
+      self.__root,
+      text="Bouger",
+      command=self.__click
+    )
+    self.__button.pack(padx=20, pady=20)
+
     windowWidth = self.__root.winfo_screenwidth() - 100
     windowHeight = self.__root.winfo_screenheight() - 100
     self.__squareSize = 0
@@ -36,6 +43,7 @@ class Forest(tk.Frame):
     self.__canvas.pack()
     self.__canvas.bind("<Configure>", self.__refresh)
     self.pack(padx=20, pady=20)
+
 
   # ================================================================================================
   # STATIC METHODS
@@ -84,6 +92,9 @@ class Forest(tk.Frame):
   # ================================================================================================
   # PRIVATE METHODS
   # ================================================================================================
+  def __click(self):
+    print("CLICK")
+
   def __refresh(self, event):
     x = int((event.width - 1) / self.__size)
     y = int((event.height - 1) / self.__size)
