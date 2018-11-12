@@ -1,6 +1,8 @@
 from Forest import Forest
 from Square import Square
 
-forest = Forest.generateRandom(40)
+forest = Forest.generateRandom(20)
 
 forest.display()
+
+forest.start()

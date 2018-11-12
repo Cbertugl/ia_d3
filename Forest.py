@@ -1,7 +1,8 @@
 from Square import Square
+import tkinter as tk
 import utils
 
-class Forest:
+class Forest(tk.Frame):
 
   # ================================================================================================
   # CONSTRUCTOR
@@ -15,6 +16,26 @@ class Forest:
     # So line and column from 0 to (__size - 1)
     self.__grid = [ [ Square() for i in range(self.__size) ] for j in range(self.__size) ]
 
+    # GUI
+    self.__root = tk.Tk()
+    self.__root.configure(background="chartreuse4")
+    tk.Frame.__init__(self, self.__root)
+
+    windowWidth = self.__root.winfo_screenwidth() - 100
+    windowHeight = self.__root.winfo_screenheight() - 100
+    self.__squareSize = 0
+
+    self.winfo_toplevel().title("La forêt magique")
+    self.__canvas = tk.Canvas(
+      self,
+      highlightthickness=0,
+      width=windowWidth,
+      height=windowHeight,
+      background="chartreuse4"
+    )
+    self.__canvas.pack()
+    self.__canvas.bind("<Configure>", self.__refresh)
+    self.pack(padx=20, pady=20)
 
   # ================================================================================================
   # STATIC METHODS
@@ -63,6 +84,20 @@ class Forest:
   # ================================================================================================
   # PRIVATE METHODS
   # ================================================================================================
+  def __refresh(self, event):
+    x = int((event.width - 1) / self.__size)
+    y = int((event.height - 1) / self.__size)
+    self.__squareSize = min(x, y)
+    self.__canvas.delete("square")
+
+    for line in range(self.__size):
+      for col in range(self.__size):
+        x1 = (col * self.__squareSize)
+        y1 = (line * self.__squareSize)
+        x2 = x1 + self.__squareSize
+        y2 = y1 + self.__squareSize
+        self.__canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill="white", tags="square")
+
   def __checkPosition(self, line, column):
     if(
       line < 0 or
@@ -131,3 +166,6 @@ class Forest:
       print("=", end = "")
 
     print()
+
+  def start(self):
+    self.__root.mainloop()
