@@ -2,6 +2,10 @@ from Square import Square
 import tkinter as tk
 import utils
 
+# TODO: créer une classe Game qui contient crée les Forest
+# TODO: passer self.__root dans Game et le passer en paramètre à Forest
+# TODO: bouger la définition du bouton dans Game
+# TODO: afficher les images des pions
 class Forest(tk.Frame):
 
   # ================================================================================================
