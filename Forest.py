@@ -2,16 +2,13 @@ from Square import Square
 import tkinter as tk
 import utils
 
-# TODO: créer une classe Game qui contient crée les Forest
-# TODO: passer self.__root dans Game et le passer en paramètre à Forest
-# TODO: bouger la définition du bouton dans Game
-# TODO: afficher les images des pions
-class Forest(tk.Frame):
+class Forest:
 
   # ================================================================================================
   # CONSTRUCTOR
   # ================================================================================================
-  def __init__(self, gridSize):
+  def __init__(self, gridSize, canvas):
+    # Forest
     if(gridSize < 2):
       raise ValueError("Minimum forest size is 2")
 
@@ -21,40 +18,17 @@ class Forest(tk.Frame):
     self.__grid = [ [ Square() for i in range(self.__size) ] for j in range(self.__size) ]
 
     # GUI
-    self.__root = tk.Tk()
-    self.__root.configure(background="chartreuse4")
-    tk.Frame.__init__(self, self.__root)
-
-    self.__button = tk.Button(
-      self.__root,
-      text="Bouger",
-      command=self.__click
-    )
-    self.__button.pack(padx=20, pady=20)
-
-    windowWidth = self.__root.winfo_screenwidth() - 100
-    windowHeight = self.__root.winfo_screenheight() - 100
-    self.__squareSize = 0
-
-    self.winfo_toplevel().title("La forêt magique")
-    self.__canvas = tk.Canvas(
-      self,
-      highlightthickness=0,
-      width=windowWidth,
-      height=windowHeight,
-      background="chartreuse4"
-    )
-    self.__canvas.pack()
+    self.__canvas = canvas
     self.__canvas.bind("<Configure>", self.__refresh)
-    self.pack(padx=20, pady=20)
+    self.__refresh()
 
 
   # ================================================================================================
   # STATIC METHODS
   # ================================================================================================
   @staticmethod
-  def generateRandom(gridSize = 3):
-    forest = Forest(gridSize)
+  def generateRandom(gridSize, canvas):
+    forest = Forest(gridSize, canvas)
 
     # Placing player
     forest.setSquareValue(0, 0, Square.PLAYER)
@@ -96,22 +70,28 @@ class Forest(tk.Frame):
   # ================================================================================================
   # PRIVATE METHODS
   # ================================================================================================
-  def __click(self):
-    print("CLICK")
+  def __refresh(self, event = None):
+    if(event == None):
+      width = self.__canvas.winfo_width()
+      height = self.__canvas.winfo_height()
+    else:
+      width = event.width
+      height = event.height
 
-  def __refresh(self, event):
-    x = int((event.width - 1) / self.__size)
-    y = int((event.height - 1) / self.__size)
-    self.__squareSize = min(x, y)
+    x = int((width - 1) / self.__size)
+    y = int((height - 1) / self.__size)
+
+    self.__squarePixelSize = min(x, y)
     self.__canvas.delete("square")
 
     for line in range(self.__size):
-      for col in range(self.__size):
-        x1 = (col * self.__squareSize)
-        y1 = (line * self.__squareSize)
-        x2 = x1 + self.__squareSize
-        y2 = y1 + self.__squareSize
+      for row in range(self.__size):
+        x1 = (row * self.__squarePixelSize)
+        y1 = (line * self.__squarePixelSize)
+        x2 = x1 + self.__squarePixelSize
+        y2 = y1 + self.__squarePixelSize
         self.__canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill="white", tags="square")
+
 
   def __checkPosition(self, line, column):
     if(
@@ -181,6 +161,3 @@ class Forest(tk.Frame):
       print("=", end = "")
 
     print()
-
-  def start(self):
-    self.__root.mainloop()

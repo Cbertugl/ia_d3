@@ -1,8 +1,5 @@
-from Forest import Forest
-from Square import Square
+from MagicForest import MagicForest
 
-forest = Forest.generateRandom(20)
+game = MagicForest()
 
-forest.display()
-
-forest.start()
+game.start()
