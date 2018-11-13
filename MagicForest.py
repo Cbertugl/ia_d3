@@ -10,10 +10,9 @@ class MagicForest(tk.Frame):
   def __init__(self):
     # GUI
     self.__root = tk.Tk()
+    self.__root.title("La forêt magique")
     self.__root.configure(background=utils.BACKGROUND_COLOR)
     tk.Frame.__init__(self, self.__root)
-
-    self.winfo_toplevel().title("La forêt magique")
 
     self.__button = tk.Button(
       self.__root,
@@ -50,7 +49,6 @@ class MagicForest(tk.Frame):
     self.__canvas.delete("all")
     self.__forest = Forest.generateRandom(self.__forestSize, self.__canvas)
     self.__forest.display()
-    self.pack()
 
 
   # ================================================================================================

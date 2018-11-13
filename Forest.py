@@ -18,9 +18,9 @@ class Forest:
     self.__grid = [ [ Square() for i in range(self.__size) ] for j in range(self.__size) ]
 
     # GUI
+    self.__pieces = []
     self.__canvas = canvas
     self.__canvas.bind("<Configure>", self.__refresh)
-    self.__refresh()
 
 
   # ================================================================================================
@@ -70,6 +70,26 @@ class Forest:
   # ================================================================================================
   # PRIVATE METHODS
   # ================================================================================================
+  def __refreshPieces(self):
+    self.__pieces = []
+    self.__canvas.delete("piece")
+
+    for line in range(self.__size):
+      for column in range(self.__size):
+        value = self.getSquareValue(line, column)
+        if(value == Square.EMPTY):
+          continue
+
+        image = Square.getPhotoImage(value, self.__squarePixelSize - 2)
+        x = (column * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+        y = (line * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+
+        self.__canvas.create_image(x, y, image=image, tags=("piece"), anchor="c")
+        self.__pieces.append(image)
+
+    self.__canvas.tag_raise("piece")
+    self.__canvas.tag_lower("square")
+
   def __refresh(self, event = None):
     if(event == None):
       width = self.__canvas.winfo_width()
@@ -85,13 +105,14 @@ class Forest:
     self.__canvas.delete("square")
 
     for line in range(self.__size):
-      for row in range(self.__size):
-        x1 = (row * self.__squarePixelSize)
+      for column in range(self.__size):
+        x1 = (column * self.__squarePixelSize)
         y1 = (line * self.__squarePixelSize)
         x2 = x1 + self.__squarePixelSize
         y2 = y1 + self.__squarePixelSize
         self.__canvas.create_rectangle(x1, y1, x2, y2, outline="black", fill="white", tags="square")
 
+    self.__refreshPieces()
 
   def __checkPosition(self, line, column):
     if(
@@ -142,8 +163,11 @@ class Forest:
       return
     
     self.__grid[line][column].setValue(value)
-  
+
   def display(self):
+    self.__refresh()
+
+  def displayConsole(self):
     for i in range(2 * self.__size + 3):
       print("=", end = "")
 
