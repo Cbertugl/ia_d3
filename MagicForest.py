@@ -1,4 +1,6 @@
 from Forest import Forest
+import random
+from Square import Square
 import tkinter as tk
 import utils
 
@@ -35,21 +37,38 @@ class MagicForest(tk.Frame):
     self.__canvas.pack(padx=20, pady=20)
 
     # Forest
-    self.__forestSize = 3
-    self.__click(True)
+    self.__forestSize = 2
+    self.__levelUp()
 
 
   # ================================================================================================
   # PRIVATE FUNCTIONS
   # ================================================================================================
-  def __click(self, firstUse = False):
-    if(not firstUse):
-      self.__forestSize += 1
-
+  def __levelUp(self):
+    self.__forestSize += 1
+    print("================================")
+    print("Entering magic forest of size", self.__forestSize)
+    print("================================")
     self.__canvas.delete("all")
     self.__forest = Forest.generateRandom(self.__forestSize, self.__canvas)
     self.__forest.display()
 
+  def __click(self):
+    r = random.randint(0, 3)
+
+    if(r == 0):
+      v = self.__forest.playerMoveDown()
+    elif(r == 1):
+      v = self.__forest.playerMoveUp()
+    elif(r == 2):
+      v = self.__forest.playerMoveLeft()
+    elif(r == 3):
+      v = self.__forest.playerMoveRight()
+
+    if(v == Square.EXIT):
+      print("Level up!")
+      print("")
+      self.__levelUp()
 
   # ================================================================================================
   # PUBLIC FUNCTIONS
