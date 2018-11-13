@@ -17,6 +17,8 @@ class Forest:
     # So line and column from 0 to (__size - 1)
     self.__grid = [ [ Square() for i in range(self.__size) ] for j in range(self.__size) ]
 
+    self.__playerPosition = (0, 0)
+
     # GUI
     self.__pieces = []
     self.__canvas = canvas
@@ -29,9 +31,6 @@ class Forest:
   @staticmethod
   def generateRandom(gridSize, canvas):
     forest = Forest(gridSize, canvas)
-
-    # Placing player
-    forest.setSquareValue(0, 0, Square.PLAYER)
 
     # Placing exit
     (randomLine, randomColumn) = utils.getRandomPosition(gridSize)
@@ -70,24 +69,38 @@ class Forest:
   # ================================================================================================
   # PRIVATE METHODS
   # ================================================================================================
+  def __placePiece(self, value, line, column, tag = None):
+    if(value == Square.EMPTY):
+      return
+
+    image = Square.getPhotoImage(value, self.__squarePixelSize - 2)
+    x = (column * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    y = (line * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+
+    if(tag == None):
+      tags = ("piece")
+    else:
+      tags = ("piece", tag)
+
+    self.__canvas.create_image(x, y, image=image, tags=tags, anchor="c")
+    self.__pieces.append(image)
+
   def __refreshPieces(self):
     self.__pieces = []
     self.__canvas.delete("piece")
 
+    # Player
+    (line, column) = self.__playerPosition
+    self.__placePiece(Square.PLAYER, line, column, "player")
+
+    # Pieces
     for line in range(self.__size):
       for column in range(self.__size):
         value = self.getSquareValue(line, column)
-        if(value == Square.EMPTY):
-          continue
-
-        image = Square.getPhotoImage(value, self.__squarePixelSize - 2)
-        x = (column * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
-        y = (line * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
-
-        self.__canvas.create_image(x, y, image=image, tags=("piece"), anchor="c")
-        self.__pieces.append(image)
+        self.__placePiece(value, line, column)
 
     self.__canvas.tag_raise("piece")
+    self.__canvas.tag_raise("player")
     self.__canvas.tag_lower("square")
 
   def __refresh(self, event = None):
@@ -142,6 +155,20 @@ class Forest:
       ):
         self.setSquareValue(newLine, newColumn, clueElement)
 
+  # Return False if can't move in this direction, the new position value otherwise
+  def __playerMove(self, lineDif, columnDif):
+    (line, column) = self.__playerPosition
+    newLine = line + lineDif
+    newColumn = column + columnDif
+    if(not self.__checkPosition(newLine, newColumn)):
+      return False
+
+    self.__playerPosition = (newLine, newColumn)
+    x = (newColumn * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    y = (newLine * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    self.__canvas.coords("player", x, y)
+
+    return(self.getSquareValue(newLine, newColumn))
 
   # ================================================================================================
   # PUBLIC METHODS
@@ -164,6 +191,23 @@ class Forest:
     
     self.__grid[line][column].setValue(value)
 
+  # See __playerMove doc
+  def playerMoveUp(self):
+    return self.__playerMove(-1, 0)
+
+  # See __playerMove doc
+  def playerMoveDown(self):
+    return self.__playerMove(1, 0)
+
+  # See __playerMove doc
+  def playerMoveLeft(self):
+    return self.__playerMove(0, -1)
+
+  # See __playerMove doc
+  def playerMoveRight(self):
+    return self.__playerMove(0, 1)
+
+  # See __playerMove doc
   def display(self):
     self.__refresh()
 
