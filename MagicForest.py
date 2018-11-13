@@ -23,15 +23,17 @@ class MagicForest(tk.Frame):
     )
     self.__button.pack(padx=10, pady=10)
 
-    windowWidth = self.__root.winfo_screenwidth()
-    windowHeight = self.__root.winfo_screenheight()
+    windowSize = min(
+      self.__root.winfo_screenwidth(),
+      self.__root.winfo_screenheight()
+    )
 
     self.__squarePixelSize = 0
     self.__canvas = tk.Canvas(
       self.__root,
       highlightthickness=0,
-      width=windowWidth,
-      height=windowHeight,
+      width=windowSize,
+      height=windowSize,
       background=utils.BACKGROUND_COLOR
     )
     self.__canvas.pack(padx=20, pady=20)
