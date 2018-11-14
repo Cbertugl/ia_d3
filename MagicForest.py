@@ -1,3 +1,4 @@
+from Agent import Agent
 from Forest import Forest
 import random
 from Square import Square
@@ -38,6 +39,9 @@ class MagicForest(tk.Frame):
     )
     self.__canvas.pack(padx=20, pady=20)
 
+    # Agent
+    self.__agent = Agent()
+
     # Forest
     self.__forestSize = 2
     self.__levelUp()
@@ -51,12 +55,16 @@ class MagicForest(tk.Frame):
   # ================================================================================================
   def __levelUp(self):
     self.__forestSize += 1
+
     print("================================")
     print("Entering magic forest of size", self.__forestSize)
     print("================================")
+
     self.__canvas.delete("all")
     self.__forest = Forest.generateRandom(self.__forestSize, self.__canvas)
     self.__forest.display()
+
+    self.__agent.setEnvironment(self.__forest)
 
   def __click(self):
     r = random.randint(0, 3)
