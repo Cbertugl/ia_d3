@@ -173,6 +173,17 @@ class Forest:
   # ================================================================================================
   # PUBLIC METHODS
   # ================================================================================================
+  def playerReset(self):
+    newLine = 0
+    newColumn = 0
+    self.__playerPosition = (newLine, newColumn)
+    x = (newColumn * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    y = (newLine * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    self.__canvas.coords("player", x, y)
+
+  def getSize(self):
+    return self.__size
+
   def hasSquareValue(self, line, column):
     if(not self.__checkPosition(line, column)):
       return None

@@ -42,6 +42,9 @@ class MagicForest(tk.Frame):
     self.__forestSize = 2
     self.__levelUp()
 
+    # Mesure de performance
+    self.__performanceMeasure = 0
+
 
   # ================================================================================================
   # PRIVATE FUNCTIONS
@@ -66,11 +69,23 @@ class MagicForest(tk.Frame):
       v = self.__forest.playerMoveLeft()
     elif(r == 3):
       v = self.__forest.playerMoveRight()
+    if ( v != False ) : self.__performanceMeasure -= 1
+
+
+    if (v == Square.CREVASSE or v == Square.MONSTER ):
+      print("t'es mort");
+      self.__forest.playerReset()
+      self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
+    if (v == Square.MONSTER_POOP or v == Square.WIND):
+      print("Attention")
 
     if(v == Square.EXIT):
+      self.__performanceMeasure += 10*(self.__forest.getSize()**2)
       print("Level up!")
       print("")
       self.__levelUp()
+
+    print(self.__performanceMeasure)  
 
   # ================================================================================================
   # PUBLIC FUNCTIONS
