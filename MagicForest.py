@@ -1,6 +1,5 @@
 from Agent import Agent
 from Forest import Forest
-import random
 from Square import Square
 import tkinter as tk
 import utils
@@ -64,18 +63,10 @@ class MagicForest(tk.Frame):
     self.__agent.setEnvironment(self.__forest)
 
   def __click(self):
-    r = random.randint(0, 3)
+    self.__agent.nextAction()
 
-    if(r == 0):
-      v = self.__forest.playerMoveDown()
-    elif(r == 1):
-      v = self.__forest.playerMoveUp()
-    elif(r == 2):
-      v = self.__forest.playerMoveLeft()
-    elif(r == 3):
-      v = self.__forest.playerMoveRight()
-
-    if(v == Square.EXIT):
+    (line, column) = self.__forest.getPlayerPosition()
+    if(self.__forest.getSquareValue(line, column) == Square.EXIT):
       print("Level up!")
       print("")
       self.__levelUp()
