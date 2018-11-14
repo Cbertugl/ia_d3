@@ -24,7 +24,16 @@ class Agent:
   # ================================================================================================
   # PRIVATE FUNCTIONS
   # ================================================================================================
-  def __inferenceEngine(self):
+  # TODO:
+  def __getActivableRules(self):
+    pass
+
+  # TODO:
+  def __chooseBestRule(self, rules):
+    pass
+
+  # TODO:
+  def __executeRule(self, rule):
     r = random.randint(0, 3)
 
     if(r == 0):
@@ -46,6 +55,12 @@ class Agent:
       # TODO: handle it
       pass
 
+  def __inferenceEngine(self):
+    activableRules = self.__getActivableRules()
+
+    bestRule = self.__chooseBestRule(activableRules)
+
+    self.__executeRule(bestRule)
 
   
   # ================================================================================================
