@@ -14,17 +14,20 @@ class Sensor(ABC):
 
 class PoopSensor(Sensor):
 
-  def detect(self, elementValue):
-    return(elementValue == Square.MONSTER_POOP)
+  def detect(self, environment):
+    positionValue = environment.getPlayerPositionValue()
+    return(positionValue == Square.MONSTER_POOP)
 
 
 class WindSensor(Sensor):
 
-  def detect(self, elementValue):
-    return(elementValue == Square.WIND)
+  def detect(self, environment):
+    positionValue = environment.getPlayerPositionValue()
+    return(positionValue == Square.WIND)
 
 
 class LightSensor(Sensor):
 
-  def detect(self, elementValue):
-    return(elementValue == Square.EXIT)
+  def detect(self, environment):
+    positionValue = environment.getPlayerPositionValue()
+    return(positionValue == Square.EXIT)

@@ -36,7 +36,16 @@ class Agent:
     elif(r == 3):
       v = Effector.MovementEffector.RIGHT
 
-    self.__movementEffector.act(self.__forest, v)
+    # If action has been executed
+    if(self.__movementEffector.act(self.__forest, v)):
+      print("POOP:", self.__poopSensor.detect(self.__forest))
+      print("WIND:", self.__windSensor.detect(self.__forest))
+      print("LIGHT:", self.__lightSensor.detect(self.__forest))
+    # If there has been an error in the action
+    else:
+      # TODO: handle it
+      pass
+
 
   
   # ================================================================================================
