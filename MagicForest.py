@@ -58,6 +58,7 @@ class MagicForest(tk.Frame):
     squareValue = self.__forest.getPlayerPositionValue()
     if(squareValue == Square.CREVASSE or squareValue == Square.MONSTER ):
       self.__forest.playerReset()
+      self.__agent.setWasDead()
       self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
 
       if(squareValue == Square.MONSTER):

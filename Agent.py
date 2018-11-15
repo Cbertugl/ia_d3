@@ -10,6 +10,9 @@ class Agent:
   # CONSTRUCTOR
   # ================================================================================================
   def __init__(self):
+    # Player
+    self.__wasDead = False
+
     # Sensors
     self.__poopSensor = Sensor.PoopSensor()
     self.__windSensor = Sensor.WindSensor()
@@ -45,7 +48,13 @@ class Agent:
 
   # TODO:
   def __observe(self):
-    pass
+    if(self.__wasDead):
+      # update knowing he just died
+      print("Oh no I was dead :-(")
+      self.__wasDead = False
+    else:
+      # normal update
+      pass
 
   # TODO:
   def __getActivableRules(self):
@@ -122,3 +131,6 @@ class Agent:
 
   def nextAction(self):
     self.__inferenceEngine()
+
+  def setWasDead(self):
+    self.__wasDead = True
