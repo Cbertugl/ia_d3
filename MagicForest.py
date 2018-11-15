@@ -67,36 +67,23 @@ class MagicForest(tk.Frame):
 
   def __click(self):
     self.__agent.nextAction()
-
-    # if(r == 0):
-    #   v = self.__forest.playerMoveDown()
-    # elif(r == 1):
-    #   v = self.__forest.playerMoveUp()
-    # elif(r == 2):
-    #   v = self.__forest.playerMoveLeft()
-    # elif(r == 3):
-    #   v = self.__forest.playerMoveRight()
-    # if ( v != False ) : self.__performanceMeasure -= 1
-
-
-    # if (v == Square.CREVASSE or v == Square.MONSTER ):
-    #   print("t'es mort");
-    #   self.__forest.playerReset()
-    #   self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
-    # if (v == Square.MONSTER_POOP or v == Square.WIND):
-    #   print("Attention")
-
-    # if(v == Square.EXIT):
-    #   self.__performanceMeasure += 10*(self.__forest.getSize()**2)
+    self.__performanceMeasure -= 1
+    
 
     (line, column) = self.__forest.getPlayerPosition()
+    if (self.__forest.getSquareValue(line, column) == Square.CREVASSE or self.__forest.getSquareValue(line, column) == Square.MONSTER ):
+      print("t'es mort");
+      self.__forest.playerReset()
+      self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
+    if (self.__forest.getSquareValue(line, column) == Square.MONSTER_POOP or self.__forest.getSquareValue(line, column) == Square.WIND):
+      print("Attention")
     if(self.__forest.getSquareValue(line, column) == Square.EXIT):
-      
+      self.__performanceMeasure += 10*(self.__forest.getSize()**2)
       print("Level up!")
       print("")
       self.__levelUp()
 
-    print(self.__performanceMeasure)  
+    print("Mesure de perf : " + str(self.__performanceMeasure))  
 
   # ================================================================================================
   # PUBLIC FUNCTIONS
