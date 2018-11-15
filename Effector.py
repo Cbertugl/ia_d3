@@ -37,6 +37,19 @@ class MovementEffector(Effector):
 
 class ShootingEffector(Effector):
 
-  def act(self):
-    # TODO:
-    return True
+  UP = 0
+  DOWN = 1
+  LEFT = 2
+  RIGHT = 3
+
+  def act(self, environment, action):
+    if(action == self.UP):
+      r = environment.playerShootUp()
+    elif(action == self.DOWN):
+      r = environment.playerShootDown()
+    elif(action == self.LEFT):
+      r = environment.playerShootLeft()
+    elif(action == self.RIGHT):
+      r = environment.playerShootRight()
+    
+    return r

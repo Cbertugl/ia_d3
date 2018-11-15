@@ -170,17 +170,18 @@ class Forest:
 
     return(self.getSquareValue(newLine, newColumn))
 
+  def __playerShoot(self, lineDif, columnDif):
+    (line, column) = self.__playerPosition
+    newLine = line + lineDif
+    newColumn = column + columnDif
+
+    if(self.getSquareValue(newLine, newColumn) == Square.MONSTER):
+      self.setSquareValue(newLine, newColumn, Square.EMPTY)
+      self.display()
+
   # ================================================================================================
   # PUBLIC METHODS
   # ================================================================================================
-  def playerReset(self):
-    newLine = 0
-    newColumn = 0
-    self.__playerPosition = (newLine, newColumn)
-    x = (newColumn * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
-    y = (newLine * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
-    self.__canvas.coords("player", x, y)
-
   def getSize(self):
     return self.__size
 
@@ -201,6 +202,40 @@ class Forest:
       return
     
     self.__grid[line][column].setValue(value)
+
+  def display(self):
+    self.__refresh()
+
+  def displayConsole(self):
+    for i in range(2 * self.__size + 3):
+      print("=", end = "")
+
+    print()
+
+    for i in range(self.__size):
+      print("‖ ", end = "")
+      
+      for j in range(self.__size):
+        print(self.__grid[i][j].getValue(), "", end = "")
+      
+      print("‖")
+
+    for i in range(2 * self.__size + 3):
+      print("=", end = "")
+
+    print()
+
+
+  # ================================================================================================
+  # PLAYER METHODS
+  # ================================================================================================
+  def playerReset(self):
+    newLine = 0
+    newColumn = 0
+    self.__playerPosition = (newLine, newColumn)
+    x = (newColumn * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    y = (newLine * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
+    self.__canvas.coords("player", x, y)
 
   def getPlayerPosition(self):
     return self.__playerPosition
@@ -225,25 +260,19 @@ class Forest:
   def playerMoveRight(self):
     return self.__playerMove(0, 1)
 
+  # TODO:
   # See __playerMove doc
-  def display(self):
-    self.__refresh()
+  def playerMoveExit(self):
+    return self.__playerMove(0, 1)
 
-  def displayConsole(self):
-    for i in range(2 * self.__size + 3):
-      print("=", end = "")
+  def playerShootUp(self):
+    return self.__playerShoot(-1, 0)
 
-    print()
+  def playerShootDown(self):
+    return self.__playerShoot(1, 0)
 
-    for i in range(self.__size):
-      print("‖ ", end = "")
-      
-      for j in range(self.__size):
-        print(self.__grid[i][j].getValue(), "", end = "")
-      
-      print("‖")
+  def playerShootLeft(self):
+    return self.__playerShoot(0, -1)
 
-    for i in range(2 * self.__size + 3):
-      print("=", end = "")
-
-    print()
+  def playerShootRight(self):
+    return self.__playerShoot(0, 1)

@@ -55,19 +55,34 @@ class Agent:
 
   # TODO:
   def __executeRule(self, rule):
-    r = random.randint(0, 3)
+    r = random.randint(0, 7)
 
+    m = None
+    s = None
     if(r == 0):
-      v = Effector.MovementEffector.UP
+      m = Effector.MovementEffector.UP
     elif(r == 1):
-      v = Effector.MovementEffector.DOWN
+      m = Effector.MovementEffector.DOWN
     elif(r == 2):
-      v = Effector.MovementEffector.LEFT
+      m = Effector.MovementEffector.LEFT
     elif(r == 3):
-      v = Effector.MovementEffector.RIGHT
+      m = Effector.MovementEffector.RIGHT
+    elif(r == 4):
+      s = Effector.ShootingEffector.UP
+    elif(r == 5):
+      s = Effector.ShootingEffector.DOWN
+    elif(r == 6):
+      s = Effector.ShootingEffector.LEFT
+    elif(r == 7):
+      s = Effector.ShootingEffector.RIGHT
 
+    if(m != None):
+      error = self.__movementEffector.act(self.__forest, m)
+    else:
+      error = self.__shootingEffector.act(self.__forest, s)
+    
     # If action has been executed
-    if(self.__movementEffector.act(self.__forest, v)):
+    if(error):
       isPoop = self.__poopSensor.detect(self.__forest)
       isWind = self.__windSensor.detect(self.__forest)
       isLight = self.__lightSensor.detect(self.__forest)
@@ -81,6 +96,8 @@ class Agent:
       pass
 
   def __inferenceEngine(self):
+    # TODO: observe
+
     activableRules = self.__getActivableRules()
 
     bestRule = self.__chooseBestRule(activableRules)
