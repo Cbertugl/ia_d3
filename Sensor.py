@@ -3,28 +3,31 @@ from Square import Square
 
 class Sensor(ABC):
 
-    def __init__(self):
-        super().__init__()
+  def __init__(self):
+    super().__init__()
 
-    # Return True if element is detected, False otherwise
-    @abstractmethod
-    def detect(self, elementValue):
-        pass
+  # Return True if element is detected, False otherwise
+  @abstractmethod
+  def detect(self, elementValue):
+    pass
 
 
 class PoopSensor(Sensor):
 
-    def detect(self, elementValue):
-        return(elementValue == Square.MONSTER_POOP)
+  def detect(self, environment):
+    positionValue = environment.getPlayerPositionValue()
+    return(positionValue == Square.MONSTER_POOP)
 
 
 class WindSensor(Sensor):
 
-    def detect(self, elementValue):
-        return(elementValue == Square.WIND)
+  def detect(self, environment):
+    positionValue = environment.getPlayerPositionValue()
+    return(positionValue == Square.WIND)
 
 
 class LightSensor(Sensor):
 
-    def detect(self, elementValue):
-        return(elementValue == Square.EXIT)
+  def detect(self, environment):
+    positionValue = environment.getPlayerPositionValue()
+    return(positionValue == Square.EXIT)

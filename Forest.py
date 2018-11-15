@@ -202,6 +202,13 @@ class Forest:
     
     self.__grid[line][column].setValue(value)
 
+  def getPlayerPosition(self):
+    return self.__playerPosition
+
+  def getPlayerPositionValue(self):
+    (line, column) = self.getPlayerPosition()
+    return self.getSquareValue(line, column)
+
   # See __playerMove doc
   def playerMoveUp(self):
     return self.__playerMove(-1, 0)

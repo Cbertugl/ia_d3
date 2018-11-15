@@ -1,6 +1,5 @@
 from Agent import Agent
 from Forest import Forest
-import random
 from Square import Square
 import tkinter as tk
 import utils
@@ -67,28 +66,32 @@ class MagicForest(tk.Frame):
     self.__agent.setEnvironment(self.__forest)
 
   def __click(self):
-    r = random.randint(0, 3)
+    self.__agent.nextAction()
 
-    if(r == 0):
-      v = self.__forest.playerMoveDown()
-    elif(r == 1):
-      v = self.__forest.playerMoveUp()
-    elif(r == 2):
-      v = self.__forest.playerMoveLeft()
-    elif(r == 3):
-      v = self.__forest.playerMoveRight()
-    if ( v != False ) : self.__performanceMeasure -= 1
+    # if(r == 0):
+    #   v = self.__forest.playerMoveDown()
+    # elif(r == 1):
+    #   v = self.__forest.playerMoveUp()
+    # elif(r == 2):
+    #   v = self.__forest.playerMoveLeft()
+    # elif(r == 3):
+    #   v = self.__forest.playerMoveRight()
+    # if ( v != False ) : self.__performanceMeasure -= 1
 
 
-    if (v == Square.CREVASSE or v == Square.MONSTER ):
-      print("t'es mort");
-      self.__forest.playerReset()
-      self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
-    if (v == Square.MONSTER_POOP or v == Square.WIND):
-      print("Attention")
+    # if (v == Square.CREVASSE or v == Square.MONSTER ):
+    #   print("t'es mort");
+    #   self.__forest.playerReset()
+    #   self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
+    # if (v == Square.MONSTER_POOP or v == Square.WIND):
+    #   print("Attention")
 
-    if(v == Square.EXIT):
-      self.__performanceMeasure += 10*(self.__forest.getSize()**2)
+    # if(v == Square.EXIT):
+    #   self.__performanceMeasure += 10*(self.__forest.getSize()**2)
+
+    (line, column) = self.__forest.getPlayerPosition()
+    if(self.__forest.getSquareValue(line, column) == Square.EXIT):
+      
       print("Level up!")
       print("")
       self.__levelUp()
