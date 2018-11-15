@@ -3,22 +3,27 @@ from abc import ABC, abstractmethod
 
 class Facts:
 
-  SAPE_UP = 0
+  SAFE_UP = 0
   SAFE_DOWN = 1
   SAFE_LEFT = 2
   SAFE_RIGHT = 3
 
-  WALL_UP = 4
-  WALL_DOWN = 5
-  WALL_LEFT = 6
-  WALL_RIGHT = 7
+  NOT_SAFE_UP = 4
+  NOT_SAFE_DOWN = 5
+  NOT_SAFE_LEFT = 6
+  NOT_SAFE_RIGHT = 7
 
-  POOP = 8
-  WIND = 9
-  LIGHT = 10
+  WALL_UP = 8
+  WALL_DOWN = 9
+  WALL_LEFT = 10
+  WALL_RIGHT = 11
 
-  MONSTER = 11
-  CREVACE = 12
+  POOP = 12
+  WIND = 13
+  LIGHT = 14
+
+  MONSTER = 15
+  CREVACE = 16
 
 
 
@@ -37,6 +42,13 @@ class Facts:
       self.__facts[i][0].addFact(self.WALL_LEFT)
       self.__facts[self.__size - 1][i].addFact(self.WALL_DOWN)
       self.__facts[i][self.__size - 1].addFact(self.WALL_RIGHT)
+    for i in range(self.__size):
+      for j in range(self.__size):
+        self.__facts[i][j].addFact(self.SAFE_UP)
+        self.__facts[i][j].addFact(self.SAFE_DOWN)
+        self.__facts[i][j].addFact(self.SAFE_LEFT)
+        self.__facts[i][j].addFact(self.SAFE_RIGHT)
+    
 
 
 
@@ -45,39 +57,8 @@ class Facts:
   # PUBLIC METHODS
   # ================================================================================================
 
-  # def addAFact(self, fact):
-  # 	self.__facts.append(fact)
-
-  # def removeAFact(self,fact):
-  # 	self.__facts.remove(fact)
-
-  # def findAFact(self, newFact):
-  # 	for fact in self.__facts :
-  # 		if isinstance(newFact,SeSituer) and isinstance(fact,SeSituer) :
-  # 			if newFact.getElem() == fact.getElem() and newFact.getPos() == fact.getPos():
-  # 				return fact
-  # 			elif newFact.getElem() == fact.getElem() and newFact.getElem() == "player":
-  # 				return fact
-  # 	return False
-
-  # def areFactsEqual(self,fact1,fact2):
-  # 	if isinstance(fact1,SeSituer) and isinstance(fact2,SeSituer) :
-  # 			if fact1.getElem() == fact2.getElem() and fact1.getPos() == fact2.getPos():
-  # 				return True
-  # 	elif isinstance(fact1,Mort) and isinstance(fact2,Mort) :
-  # 			if fact1.getElem() == fact2.getElem() :
-  # 				return True
-  # 	else : return False
-
-  # def findAFactWithPosition(self,pos):
-  # 	for fact in self.__facts:
-  # 		if fact.getPos() == pos:
-  # 			return fact
-  # 	return False
-
-  # def getFacts(self):
-  # 	return self.__facts
-
+  def getFactsArray(self):
+    return self.__facts
 
 
 class Fact:
@@ -87,32 +68,17 @@ class Fact:
     self.__facts = []
 
   def addFact(self, fact):
-    self.__facts.append(fact)
+    if not fact in self.__facts : self.__facts.append(fact)
+    else : return False
+
+  def removeFact(self,fact):
+    if fact in self.__facts : self.__facts.remove(fact)
+
+  def getFacts(self):
+    return self.__facts
   
+  def areFactsEqual(self,fact1,fact2):
+    if fact1 == fact2 :
+      return True
+    return False
  
-
-# class SeSituer(Fact):
-
-# 	def __init__(self,elem,pos):
-# 		super().__init__()
-# 		self.__elem = elem
-# 		self.__pos = pos
-
-# 	def getElem(self):
-# 		return self.__elem
-
-# 	def getPos(self):
-# 		return self.__pos
-
-
-# # class Vivant(Fact):
-
-# # 	def __init__(self,elem):
-# # 		super().__init__()
-# # 		self.__elem = elem
-
-# class Mort(Fact):
-
-# 	def __init__(self,elem):
-# 		super().__init__()
-# 		self.__elem = elem

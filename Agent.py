@@ -94,7 +94,14 @@ class Agent:
   def setEnvironment(self, forest):
     self.__forest = forest
     self.__facts = Facts(self.__forest.getSize())
-    # self.__rules = Rules()
+    self.__rules = Rules(self.__facts)
+    for i in range(self.__forest.getSize()):
+      for j in range(self.__forest.getSize()):
+        self.__rules.executeInitialRules(self.__facts.getFactsArray()[i][j])
+    # print(self.__facts.getFactsArray()[0][2].getFacts())
+    # print(self.__facts.getFactsArray()[0][1].getFacts())
+    # print(self.__facts.getFactsArray()[1][1].getFacts())
+    # print(self.__facts.getFactsArray()[2][1].getFacts())
 
   def nextAction(self):
     self.__inferenceEngine()
