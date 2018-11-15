@@ -7,11 +7,12 @@ class Forest:
   # ================================================================================================
   # CONSTRUCTOR
   # ================================================================================================
-  def __init__(self, gridSize, canvas):
+  def __init__(self, gridSize, canvas, magicForest):
     # Forest
     if(gridSize < 2):
       raise ValueError("Minimum forest size is 2")
 
+    self.__magicForest = magicForest
     self.__size = gridSize
     # Grid defined like that: __grid[line][column]
     # So line and column from 0 to (__size - 1)
@@ -29,8 +30,8 @@ class Forest:
   # STATIC METHODS
   # ================================================================================================
   @staticmethod
-  def generateRandom(gridSize, canvas):
-    forest = Forest(gridSize, canvas)
+  def generateRandom(gridSize, canvas, magicForest):
+    forest = Forest(gridSize, canvas, magicForest)
 
     # Placing exit
     (randomLine, randomColumn) = utils.getRandomPosition(gridSize)
@@ -155,9 +156,20 @@ class Forest:
       ):
         self.setSquareValue(newLine, newColumn, clueElement)
 
-  # Return False if can't move in this direction, the new position value otherwise
+  # Return False if can't move in this direction, True otherwise
   def __playerMove(self, lineDif, columnDif):
+    self.__magicForest.performanceMove()
+
     (line, column) = self.__playerPosition
+
+    # If player wants to exit
+    if(lineDif == 0 and columnDif == 0):
+      if(self.getPlayerPositionValue() == Square.EXIT):
+        self.__magicForest.levelUp()
+        return True
+      else:
+        return False
+
     newLine = line + lineDif
     newColumn = column + columnDif
     if(not self.__checkPosition(newLine, newColumn)):
@@ -168,9 +180,11 @@ class Forest:
     y = (newLine * self.__squarePixelSize) + int(self.__squarePixelSize / 2)
     self.__canvas.coords("player", x, y)
 
-    return(self.getSquareValue(newLine, newColumn))
+    return True
 
   def __playerShoot(self, lineDif, columnDif):
+    self.__magicForest.performanceShootRock()
+
     (line, column) = self.__playerPosition
     newLine = line + lineDif
     newColumn = column + columnDif
@@ -260,10 +274,9 @@ class Forest:
   def playerMoveRight(self):
     return self.__playerMove(0, 1)
 
-  # TODO:
   # See __playerMove doc
   def playerMoveExit(self):
-    return self.__playerMove(0, 1)
+    return self.__playerMove(0, 0)
 
   def playerShootUp(self):
     return self.__playerShoot(-1, 0)

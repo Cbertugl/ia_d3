@@ -29,7 +29,7 @@ class MovementEffector(Effector):
     elif(action == self.RIGHT):
       r = environment.playerMoveRight()
     elif(action == self.EXIT):
-      # TODO:
+      r = environment.playerMoveExit()
       pass
 
     return r

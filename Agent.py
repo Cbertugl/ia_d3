@@ -43,6 +43,9 @@ class Agent:
     #   self.__facts.removeAFact(formerFactPlayer)
     #   self.__facts.addAFact(newFactPlayer)
 
+  # TODO:
+  def __observe(self):
+    pass
 
   # TODO:
   def __getActivableRules(self):
@@ -55,6 +58,10 @@ class Agent:
 
   # TODO:
   def __executeRule(self, rule):
+    if(self.__lightSensor.detect(self.__forest)):
+      self.__movementEffector.act(self.__forest, Effector.MovementEffector.EXIT)
+      return
+
     r = random.randint(0, 7)
 
     m = None
@@ -96,7 +103,7 @@ class Agent:
       pass
 
   def __inferenceEngine(self):
-    # TODO: observe
+    self.__observe()
 
     activableRules = self.__getActivableRules()
 
