@@ -1,6 +1,9 @@
 import Effector
 import random
 import Sensor
+from Facts import Facts
+from Facts import SeSituer
+from Rules import Rules
 
 class Agent:
 
@@ -20,10 +23,23 @@ class Agent:
     # Environment
     self.__forest = None
 
+    # Facts and Rules
+    self.__facts = Facts()
+    self.__rules = Rules()
+
 
   # ================================================================================================
   # PRIVATE FUNCTIONS
   # ================================================================================================
+  # TODO:
+  def __setFacts(self,fact):
+
+    if fact == "poop" or fact == "wind" : 
+      newFactPoopOrWind = SeSituer(fact,self.__forest.getPlayerPosition())
+      if not ( self.__facts.findAFact(newFactPoopOrWind)):
+        self.__facts.addAFact(newFactPoopOrWind)
+
+
   # TODO:
   def __getActivableRules(self):
     pass
@@ -47,9 +63,15 @@ class Agent:
 
     # If action has been executed
     if(self.__movementEffector.act(self.__forest, v)):
-      print("POOP:", self.__poopSensor.detect(self.__forest))
-      print("WIND:", self.__windSensor.detect(self.__forest))
-      print("LIGHT:", self.__lightSensor.detect(self.__forest))
+      isPoop = self.__poopSensor.detect(self.__forest)
+      isWind = self.__windSensor.detect(self.__forest)
+      isLight = self.__lightSensor.detect(self.__forest)
+      # print("POOP:", isPoop)
+      # print("WIND:", isWind)
+      # print("LIGHT:", isLight)
+      if isPoop : self.__setFacts("poop")
+      if isWind : self.__setFacts("wind")
+      print(self.__facts.getFacts())
     # If there has been an error in the action
     else:
       # TODO: handle it
