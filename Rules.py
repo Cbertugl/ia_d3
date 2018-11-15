@@ -1,4 +1,6 @@
-from Facts import SeSituer
+from Facts import Facts
+
+
 
 class Rules:
 
@@ -7,13 +9,24 @@ class Rules:
 	# CONSTRUCTOR
 	# ================================================================================================
 	def __init__(self):
-	  # Forest
-	  self.__rules = [ ] # ["Si Fact A", "Alors Action B"] , [ "Si A2", "Alors B2"]
-	  self.__posVar = (-1,-1)
-	  factNumber1 = SeSituer("player",self.__posVar)
-	  self.__addAFact(factNumber1)
+		self.__rules == []
+	  
 
-
-
-	def __addAFact(self, fact):
-		self.__rules.append(fact)
+	# def coverRules(self, facts):
+	# 	activableRules = []
+	# 	for values in self.__rules.values():
+	# 		isRuleActivable = True
+	# 		for i in range(len(values[0])):
+	# 			j = 0
+	# 			for fact in facts.getFacts() :
+	# 				# égalité des faits ?
+	# 				if facts.areFactsEqual(fact, values[0][i]) :
+	# 					break
+	# 				else :
+	# 					j+=1
+	# 			if j == len(facts) : #règle non valide
+	# 				isRuleActivable = False
+	# 				break # pour les values
+	# 		if isRuleActivable :
+	# 			activableRules.append(values)
+	# 	return activableRules

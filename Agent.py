@@ -2,7 +2,6 @@ import Effector
 import random
 import Sensor
 from Facts import Facts
-from Facts import SeSituer
 from Rules import Rules
 
 class Agent:
@@ -24,29 +23,30 @@ class Agent:
     self.__forest = None
 
     # Facts and Rules
-    self.__facts = Facts()
-    self.__rules = Rules()
+    self.__facts = None
+    self.__rules = None
 
 
   # ================================================================================================
   # PRIVATE FUNCTIONS
   # ================================================================================================
   # TODO:
-  def __setFacts(self,fact):
+  # def __setFacts(self,fact):
 
-    if fact == "poop" or fact == "wind" : 
-      newFactPoopOrWind = SeSituer(fact,self.__forest.getPlayerPosition())
-      if not ( self.__facts.findAFact(newFactPoopOrWind)):
-        self.__facts.addAFact(newFactPoopOrWind)
-    if fact == "player" :
-      newFactPlayer = SeSituer(fact,self.__forest.getPlayerPosition())
-      formerFactPlayer = self.__facts.findAFact(newFactPlayer)
-      self.__facts.removeAFact(formerFactPlayer)
-      self.__facts.addAFact(newFactPlayer)
+    # if fact == "poop" or fact == "wind" : 
+    #   newFactPoopOrWind = SeSituer(fact,self.__forest.getPlayerPosition())
+    #   if not ( self.__facts.findAFact(newFactPoopOrWind)):
+    #     self.__facts.addAFact(newFactPoopOrWind)
+    # if fact == "player" :
+    #   newFactPlayer = SeSituer(fact,self.__forest.getPlayerPosition())
+    #   formerFactPlayer = self.__facts.findAFact(newFactPlayer)
+    #   self.__facts.removeAFact(formerFactPlayer)
+    #   self.__facts.addAFact(newFactPlayer)
 
 
   # TODO:
   def __getActivableRules(self):
+    # self.__rules.coverRules(self.__facts)
     pass
 
   # TODO:
@@ -86,10 +86,10 @@ class Agent:
       isPoop = self.__poopSensor.detect(self.__forest)
       isWind = self.__windSensor.detect(self.__forest)
       isLight = self.__lightSensor.detect(self.__forest)
-      if isPoop : self.__setFacts("poop")
-      if isWind : self.__setFacts("wind")
-      self.__setFacts("player")
-      print(self.__facts.getFacts())
+      # if isPoop : self.__setFacts("poop")
+      # if isWind : self.__setFacts("wind")
+      # self.__setFacts("player")
+      # print(self.__facts.getFacts())
     # If there has been an error in the action
     else:
       # TODO: handle it
@@ -110,6 +110,8 @@ class Agent:
   # ================================================================================================
   def setEnvironment(self, forest):
     self.__forest = forest
+    self.__facts = Facts(self.__forest.getSize())
+    # self.__rules = Rules()
 
   def nextAction(self):
     self.__inferenceEngine()
