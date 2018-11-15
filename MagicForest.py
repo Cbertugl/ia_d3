@@ -62,9 +62,9 @@ class MagicForest(tk.Frame):
       self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
 
       if(squareValue == Square.MONSTER):
-        print("Player has been killed by a monster...")
+        print("Player has been killed by a monster...", end=" ")
       elif(squareValue == Square.CREVASSE):
-        print("Player fell in a crevasse...")
+        print("Player fell in a crevasse...", end=" ")
 
     # if (self.__forest.getSquareValue(line, column) == Square.MONSTER_POOP or self.__forest.getSquareValue(line, column) == Square.WIND):
       # print("Attention")
