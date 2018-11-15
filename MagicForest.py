@@ -43,7 +43,7 @@ class MagicForest(tk.Frame):
 
     # Forest
     self.__forestSize = 2
-    self.__levelUp()
+    self.levelUp(True)
 
     # Mesure de performance
     self.__performanceMeasure = 0
@@ -52,7 +52,43 @@ class MagicForest(tk.Frame):
   # ================================================================================================
   # PRIVATE FUNCTIONS
   # ================================================================================================
-  def __levelUp(self):
+  def __click(self):
+    self.__agent.nextAction()
+
+    squareValue = self.__forest.getPlayerPositionValue()
+    if(squareValue == Square.CREVASSE or squareValue == Square.MONSTER ):
+      self.__forest.playerReset()
+      self.__agent.setWasDead()
+      self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
+
+      if(squareValue == Square.MONSTER):
+        print("Player has been killed by a monster...", end=" ")
+      elif(squareValue == Square.CREVASSE):
+        print("Player fell in a crevasse...", end=" ")
+
+    # if (self.__forest.getSquareValue(line, column) == Square.MONSTER_POOP or self.__forest.getSquareValue(line, column) == Square.WIND):
+      # print("Attention")
+
+    print("Performance measure: " + str(self.__performanceMeasure))
+
+  # ================================================================================================
+  # PUBLIC FUNCTIONS
+  # ================================================================================================
+  def start(self):
+    self.__root.mainloop()
+
+  def performanceShootRock(self):
+    self.__performanceMeasure -= 10
+
+  def performanceMove(self):
+    self.__performanceMeasure -= 1
+
+  def levelUp(self, firstCall = False):
+    if(not firstCall):
+      print("Level up!")
+      print("")
+      self.__performanceMeasure += 10*(self.__forestSize**2)
+
     self.__forestSize += 1
 
     print("================================")
@@ -60,33 +96,7 @@ class MagicForest(tk.Frame):
     print("================================")
 
     self.__canvas.delete("all")
-    self.__forest = Forest.generateRandom(self.__forestSize, self.__canvas)
+    self.__forest = Forest.generateRandom(self.__forestSize, self.__canvas, self)
     self.__forest.display()
 
     self.__agent.setEnvironment(self.__forest)
-
-  def __click(self):
-    self.__agent.nextAction()
-    self.__performanceMeasure -= 1
-    
-
-    (line, column) = self.__forest.getPlayerPosition()
-    if (self.__forest.getSquareValue(line, column) == Square.CREVASSE or self.__forest.getSquareValue(line, column) == Square.MONSTER ):
-      # print("t'es mort");
-      self.__forest.playerReset()
-      self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
-    # if (self.__forest.getSquareValue(line, column) == Square.MONSTER_POOP or self.__forest.getSquareValue(line, column) == Square.WIND):
-      # print("Attention")
-    if(self.__forest.getSquareValue(line, column) == Square.EXIT):
-      self.__performanceMeasure += 10*(self.__forest.getSize()**2)
-      print("Level up!")
-      print("")
-      self.__levelUp()
-
-    # print("Mesure de perf : " + str(self.__performanceMeasure))  
-
-  # ================================================================================================
-  # PUBLIC FUNCTIONS
-  # ================================================================================================
-  def start(self):
-    self.__root.mainloop()
