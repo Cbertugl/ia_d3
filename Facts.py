@@ -32,8 +32,9 @@ class Facts:
 			if isinstance(newFact,SeSituer) and isinstance(fact,SeSituer) :
 				if newFact.getElem() == fact.getElem() and newFact.getPos() == fact.getPos():
 					print("yooo, déjà laaaa")
-					return True
-		# if newFact in self.__facts : return fact # a réécrire
+					return fact
+				elif newFact.getElem() == fact.getElem() and newFact.getElem() == "player":
+					return fact
 		return False
 
 	def getFacts(self):

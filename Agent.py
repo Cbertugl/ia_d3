@@ -38,6 +38,11 @@ class Agent:
       newFactPoopOrWind = SeSituer(fact,self.__forest.getPlayerPosition())
       if not ( self.__facts.findAFact(newFactPoopOrWind)):
         self.__facts.addAFact(newFactPoopOrWind)
+    if fact == "player" :
+      newFactPlayer = SeSituer(fact,self.__forest.getPlayerPosition())
+      formerFactPlayer = self.__facts.findAFact(newFactPlayer)
+      self.__facts.removeAFact(formerFactPlayer)
+      self.__facts.addAFact(newFactPlayer)
 
 
   # TODO:
@@ -71,6 +76,7 @@ class Agent:
       # print("LIGHT:", isLight)
       if isPoop : self.__setFacts("poop")
       if isWind : self.__setFacts("wind")
+      self.__setFacts("player")
       print(self.__facts.getFacts())
     # If there has been an error in the action
     else:
