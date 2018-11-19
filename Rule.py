@@ -117,6 +117,7 @@ class Rule:
       for f in tmp:
         copy = f.copy()
         copy.resetPositionVariable()
+        copy.setInference()
         res.append(copy)
       self.resetPosition()
 

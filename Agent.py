@@ -53,12 +53,6 @@ class Agent:
 
   def __observe(self):
     position = self.__forest.getPlayerPosition()
-    
-    # Update new player position
-    for b in self.__belief:
-      if(b.getName() == Square.PLAYER):
-        self.__belief.remove(b)
-    self.__addBelief(Fact(Square.PLAYER, position=position))
 
     # Update knowing he just died
     if(self.__wasDead):
@@ -124,10 +118,14 @@ class Agent:
   def act(self):
     self.__observe()
 
+    self.displayBelief()
+
     inferenceFacts = self.__inferenceEngine.run(self.__belief)
 
+    print("INFERENCE FACTS: ", end="")
     Fact.displayFacts(inferenceFacts)
 
+    # TODO: add to intentions before executing action
     self.__executeAction(inferenceFacts)
 
 

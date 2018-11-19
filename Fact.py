@@ -2,16 +2,28 @@ from utils import X, UP, DOWN, LEFT, RIGHT
 
 class Fact():
 
+  # ================================================================================================
+  # CONSTANTS
+  # ================================================================================================
   WALL = "WALL"
   DEADLY = "DEADLY"
   CAN_EXIT = "CAN_EXIT"
 
-  def __init__(self, name, notOperator = False, position = None, positionVariable = None):
+
+  # ================================================================================================
+  # CONSTRUCTOR
+  # ================================================================================================
+  def __init__(self, name, notOperator = False, position = None, positionVariable = None, inference = False):
     self.__name = name
     self.__not = notOperator
     self.__position = position
     self.__positionVariable = positionVariable
+    self.__inference = inference
 
+
+  # ================================================================================================
+  # STATIC METHODS
+  # ================================================================================================
   # Return True if factList contains fact, False otherwise
   @staticmethod
   def factListContains(factList, fact):
@@ -46,6 +58,10 @@ class Fact():
       if(i != len(facts) - 1): print(", ", end="")
     print("]", sep="", end=end)
 
+
+  # ================================================================================================
+  # PUBLIC METHODS
+  # ================================================================================================
   def getName(self):
     return self.__name
 
@@ -65,12 +81,17 @@ class Fact():
   def resetPositionVariable(self):
     self.__positionVariable = None
 
+  def setInference(self):
+    self.__inference = True
+
+  def isInference(self):
+    return self.__inference
+
   # 3 type of facts:
   # * normal fact: not = False, name, position
   # * not fact: not = True, name, position
   # * terminal fact: name, position = None
   def contradicts(self, fact):
-
     # If fact of type terminal
     if(
       self.__position == None or
