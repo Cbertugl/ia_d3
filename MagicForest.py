@@ -26,7 +26,7 @@ class MagicForest(tk.Frame):
     windowSize = min(
       self.__root.winfo_screenwidth(),
       self.__root.winfo_screenheight()
-    )
+    ) / 2
 
     self.__squarePixelSize = 0
     self.__canvas = tk.Canvas(
@@ -57,17 +57,14 @@ class MagicForest(tk.Frame):
 
     squareValue = self.__forest.getPlayerPositionValue()
     if(squareValue == Square.CREVASSE or squareValue == Square.MONSTER ):
+      self.__agent.setWasDead(self.__forest.getPlayerPosition())
       self.__forest.playerReset()
-      self.__agent.setWasDead()
       self.__performanceMeasure -= 10*(self.__forest.getSize()**2)
 
       if(squareValue == Square.MONSTER):
         print("Player has been killed by a monster...", end=" ")
       elif(squareValue == Square.CREVASSE):
         print("Player fell in a crevasse...", end=" ")
-
-    # if (self.__forest.getSquareValue(line, column) == Square.MONSTER_POOP or self.__forest.getSquareValue(line, column) == Square.WIND):
-      # print("Attention")
 
     print("Performance measure: " + str(self.__performanceMeasure))
 

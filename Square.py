@@ -6,13 +6,13 @@ class Square:
   # ================================================================================================
   # CONSTANTS
   # ================================================================================================
-  EMPTY = " "
-  PLAYER = "X"
-  EXIT = "E"
-  WIND = "W"
-  CREVASSE = "C"
-  MONSTER_POOP = "P"
-  MONSTER = "M"
+  EMPTY = "EMPTY"
+  PLAYER = "PLAYER"
+  EXIT = "EXIT"
+  WIND = "WIND"
+  CREVASSE = "CREVASSE"
+  MONSTER_POOP = "MONSTER_POOP"
+  MONSTER = "MONSTER"
 
 
   # ================================================================================================

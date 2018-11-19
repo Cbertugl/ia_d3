@@ -20,3 +20,22 @@ def rollDice(chance):
     return True
   else:
     return False
+
+def X(position):
+  return position
+  
+def UP(position):
+  (l, c) = position
+  return (l - 1, c)
+
+def DOWN(position):
+  (l, c) = position
+  return (l + 1, c)
+
+def LEFT(position):
+  (l, c) = position
+  return (l, c - 1)
+
+def RIGHT(position):
+  (l, c) = position
+  return (l, c + 1)

@@ -1,8 +1,10 @@
 import Effector
+from Fact import Fact
 import random
 import Sensor
-from Facts import Facts
-from Rules import Rules
+from Square import Square
+from Rule import Rule
+from utils import X, UP, DOWN, LEFT, RIGHT
 
 class Agent:
 
@@ -25,48 +27,198 @@ class Agent:
     # Environment
     self.__forest = None
 
-    # Facts and Rules
-    self.__facts = None
-    self.__rules = None
+    # BDI
+    self.__belief = [] # Fact array
+    self.__desires = [] # Fact array
+    self.__intentions = [] # Fact array
+
+    # Rules
+    self.__rules = []
+    self.__initRules()
 
 
   # ================================================================================================
   # PRIVATE FUNCTIONS
   # ================================================================================================
-  # TODO:
-  # def __setFacts(self,fact):
+  def __initRules(self):
+    self.__rules = [
+      # EMPTY => EMPTY
+      Rule(
+        [
+          Fact(Square.EMPTY, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=UP, notOperator=True)
+        ],
+        [ Fact(Square.EMPTY, positionVariable=UP) ]
+      ),
+      Rule(
+        [
+          Fact(Square.EMPTY, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=DOWN, notOperator=True)
+        ],
+        [ Fact(Square.EMPTY, positionVariable=DOWN) ]
+      ),
+      Rule(
+        [
+          Fact(Square.EMPTY, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=LEFT, notOperator=True)
+        ],
+        [ Fact(Square.EMPTY, positionVariable=LEFT) ]
+      ),
+      Rule(
+        [
+          Fact(Square.EMPTY, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
+        ],
+        [ Fact(Square.EMPTY, positionVariable=RIGHT) ]
+      ),
 
-    # if fact == "poop" or fact == "wind" : 
-    #   newFactPoopOrWind = SeSituer(fact,self.__forest.getPlayerPosition())
-    #   if not ( self.__facts.findAFact(newFactPoopOrWind)):
-    #     self.__facts.addAFact(newFactPoopOrWind)
-    # if fact == "player" :
-    #   newFactPlayer = SeSituer(fact,self.__forest.getPlayerPosition())
-    #   formerFactPlayer = self.__facts.findAFact(newFactPlayer)
-    #   self.__facts.removeAFact(formerFactPlayer)
-    #   self.__facts.addAFact(newFactPlayer)
+      # MONSTER_POOP => MONSTER
+      Rule(
+        [
+          Fact(Square.MONSTER_POOP, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=UP, notOperator=True)
+        ],
+        [ Fact(Square.MONSTER, positionVariable=UP) ]
+      ),
+      Rule(
+        [
+          Fact(Square.MONSTER_POOP, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=DOWN, notOperator=True)
+        ],
+        [ Fact(Square.MONSTER, positionVariable=DOWN) ]
+      ),
+      Rule(
+        [
+          Fact(Square.MONSTER_POOP, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=LEFT, notOperator=True)
+        ],
+        [ Fact(Square.MONSTER, positionVariable=LEFT) ]
+      ),
+      Rule(
+        [
+          Fact(Square.MONSTER_POOP, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
+        ],
+        [ Fact(Square.MONSTER, positionVariable=RIGHT) ]
+      ),
 
-  # TODO:
+      # WIND => CREVASSE
+      Rule(
+        [
+          Fact(Square.WIND, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=UP, notOperator=True)
+        ],
+        [ Fact(Square.CREVASSE, positionVariable=UP) ]
+      ),
+      Rule(
+        [
+          Fact(Square.WIND, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=DOWN, notOperator=True)
+        ],
+        [ Fact(Square.CREVASSE, positionVariable=DOWN) ]
+      ),
+      Rule(
+        [
+          Fact(Square.WIND, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=LEFT, notOperator=True)
+        ],
+        [ Fact(Square.CREVASSE, positionVariable=LEFT) ]
+      ),
+      Rule(
+        [
+          Fact(Square.WIND, positionVariable=X),
+          Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
+        ],
+        [ Fact(Square.CREVASSE, positionVariable=RIGHT) ]
+      ),
+
+      # EXIT => CAN_EXIT
+      Rule(
+        [ Fact(Square.EXIT, positionVariable=X) ],
+        [ Fact(Fact.CAN_EXIT) ],
+        100
+      )
+    ]
+
+  def __initBelief(self, forestSize):
+    self.__belief = []
+
+    for i in range(forestSize):
+      self.__addBelief(Fact(Fact.WALL, position=(-1, i)))
+      self.__addBelief(Fact(Fact.WALL, position=(forestSize, i)))
+      self.__addBelief(Fact(Fact.WALL, position=(i, -1)))
+      self.__addBelief(Fact(Fact.WALL, position=(i, forestSize)))
+
+  def __addBelief(self, fact):
+    Fact.addFact(fact, self.__belief)
+
   def __observe(self):
+    position = self.__forest.getPlayerPosition()
+
     if(self.__wasDead):
       # update knowing he just died
-      print("Oh no I was dead :-(")
+      fact = Fact(Fact.DEADLY, position=self.__wasDead)
       self.__wasDead = False
     else:
-      # normal update
-      pass
+      if(self.__poopSensor.detect(self.__forest)):
+        fact = Fact(Square.MONSTER_POOP, position=position)
+      elif(self.__windSensor.detect(self.__forest)):
+        fact = Fact(Square.WIND, position=position)
+      elif(self.__lightSensor.detect(self.__forest)):
+        fact = Fact(Square.EXIT, position=position)
+      else:
+        fact = Fact(Square.EMPTY, position=position)
+
+    self.__addBelief(fact)
+
+  def __run(self, facts):
+    # Init
+    over = False
+    inferenceFacts = facts.copy()
+    for r in self.__rules:
+      r.unmark()
+
+    while(not over):
+      over = True
+
+      # Select applicable rules (not marked, no contradiction and possible)
+      applicableRules = []
+
+      for r in self.__rules:
+        if(
+          not r.isMarked() and
+          r.isPossible(inferenceFacts)
+        ):
+          if(r.hasContradiction(inferenceFacts)):
+            r.mark()
+          else:
+            applicableRules.append(r)
+
+      # Choose which rule we apply according to priority or randomly if we
+      # they all have the same priority
+      if(len(applicableRules) > 0):
+        over = False
+        maxPriority = 0
+        bestRule = None
+
+        for r in applicableRules:
+          if(r.getPriority() > maxPriority):
+            maxPriority = r.getPriority()
+            bestRule = r
+
+        if(bestRule == None):
+          bestRule = applicableRules[random.randint(0, len(applicableRules) - 1)]
+
+        # Apply rule
+        for f in bestRule.getConclusion(inferenceFacts):
+          Fact.addFact(f, inferenceFacts)
+
+        bestRule.mark()
+
+    return inferenceFacts
 
   # TODO:
-  def __getActivableRules(self):
-    # self.__rules.coverRules(self.__facts)
-    pass
-
-  # TODO:
-  def __chooseBestRule(self, rules):
-    pass
-
-  # TODO:
-  def __executeRule(self, rule):
+  def __executeAction(self, inferenceFacts):
     if(self.__lightSensor.detect(self.__forest)):
       self.__movementEffector.act(self.__forest, Effector.MovementEffector.EXIT)
       return
@@ -93,44 +245,39 @@ class Agent:
       s = Effector.ShootingEffector.RIGHT
 
     if(m != None):
-      error = self.__movementEffector.act(self.__forest, m)
+      self.__movementEffector.act(self.__forest, m)
     else:
-      error = self.__shootingEffector.act(self.__forest, s)
-    
-    # If action has been executed
-    if(error):
-      isPoop = self.__poopSensor.detect(self.__forest)
-      isWind = self.__windSensor.detect(self.__forest)
-      isLight = self.__lightSensor.detect(self.__forest)
-      # if isPoop : self.__setFacts("poop")
-      # if isWind : self.__setFacts("wind")
-      # self.__setFacts("player")
-      # print(self.__facts.getFacts())
-    # If there has been an error in the action
-    else:
-      # TODO: handle it
-      pass
+      self.__shootingEffector.act(self.__forest, s)
 
   def __inferenceEngine(self):
     self.__observe()
 
-    activableRules = self.__getActivableRules()
+    inferenceFacts = self.__run(self.__belief)
 
-    bestRule = self.__chooseBestRule(activableRules)
+    Fact.displayFacts(inferenceFacts)
 
-    self.__executeRule(bestRule)
+    self.__executeAction(inferenceFacts)
 
   
   # ================================================================================================
   # PUBLIC FUNCTIONS
   # ================================================================================================
   def setEnvironment(self, forest):
+    self.__initBelief(forest.getSize())
+    self.__intentions = []
     self.__forest = forest
-    self.__facts = Facts(self.__forest.getSize())
-    # self.__rules = Rules()
 
   def nextAction(self):
     self.__inferenceEngine()
 
-  def setWasDead(self):
-    self.__wasDead = True
+  def setWasDead(self, position):
+    self.__intentions = []
+    self.__wasDead = position
+
+
+  # ================================================================================================
+  # DISPLAY FUNCTIONS
+  # ================================================================================================
+  def displayBelief(self):
+    print("BELIEF: ", end="")
+    Fact.displayFacts(self.__belief)
