@@ -70,11 +70,10 @@ class Agent:
 
     self.__addBelief(fact)
 
-  # TODO:
   def __executeAction(self, inferenceFacts):
-    if(self.__lightSensor.detect(self.__forest)):
-      self.__movementEffector.act(self.__forest, Effector.MovementEffector.EXIT)
-      return
+    for fact in inferenceFacts:
+      if(fact.getName() == Fact.CAN_EXIT):
+        self.__movementEffector.act(self.__forest, Effector.MovementEffector.EXIT)
 
     r = random.randint(0, 7)
 
