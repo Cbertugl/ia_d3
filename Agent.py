@@ -53,11 +53,18 @@ class Agent:
 
   def __observe(self):
     position = self.__forest.getPlayerPosition()
+    
+    # Update new player position
+    for b in self.__belief:
+      if(b.getName() == Square.PLAYER):
+        self.__belief.remove(b)
+    self.__addBelief(Fact(Square.PLAYER, position=position))
 
+    # Update knowing he just died
     if(self.__wasDead):
-      # update knowing he just died
       fact = Fact(Fact.DEADLY, position=self.__wasDead)
       self.__wasDead = False
+    # Update according to new case value
     else:
       if(self.__poopSensor.detect(self.__forest)):
         fact = Fact(Square.MONSTER_POOP, position=position)

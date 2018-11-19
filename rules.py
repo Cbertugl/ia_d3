@@ -4,6 +4,21 @@ from Square import Square
 from utils import X, UP, DOWN, LEFT, RIGHT
 
 rules = [
+
+  # ================================================================================================
+  # TERMINAL RULES
+  # ================================================================================================
+  # EXIT => CAN_EXIT
+  Rule(
+    [ Fact(Square.EXIT, positionVariable=X) ],
+    [ Fact(Fact.CAN_EXIT) ],
+    100
+  ),
+
+
+  # ================================================================================================
+  # NORMAL RULES
+  # ================================================================================================
   # EMPTY => EMPTY
   Rule(
     [
@@ -92,12 +107,5 @@ rules = [
       Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
     ],
     [ Fact(Square.CREVASSE, positionVariable=RIGHT) ]
-  ),
-
-  # EXIT => CAN_EXIT
-  Rule(
-    [ Fact(Square.EXIT, positionVariable=X) ],
-    [ Fact(Fact.CAN_EXIT) ],
-    100
   )
 ]
