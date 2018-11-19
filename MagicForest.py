@@ -26,7 +26,7 @@ class MagicForest(tk.Frame):
     windowSize = min(
       self.__root.winfo_screenwidth(),
       self.__root.winfo_screenheight()
-    ) / 2
+    )
 
     self.__squarePixelSize = 0
     self.__canvas = tk.Canvas(
@@ -83,7 +83,7 @@ class MagicForest(tk.Frame):
 
   def levelUp(self, firstCall = False):
     if(not firstCall):
-      print("Level up!")
+      print("\nLevel up!")
       print("")
       self.__performanceMeasure += 10*(self.__forestSize**2)
 

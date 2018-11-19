@@ -13,13 +13,15 @@ class Effector(ABC):
 
 class MovementEffector(Effector):
 
-  UP = 1
-  DOWN = 2
-  LEFT = 3
-  RIGHT = 4
-  EXIT = 5
+  UP = "MOVE_UP"
+  DOWN = "MOVE_DOWN"
+  LEFT = "MOVE_LEFT"
+  RIGHT = "MOVE_RIGHT"
+  EXIT = "MOVE_EXIT"
 
   def act(self, environment, action):
+    print(action, end="")
+
     if(action == self.UP):
       r = environment.playerMoveUp()
     elif(action == self.DOWN):
@@ -36,12 +38,14 @@ class MovementEffector(Effector):
 
 class ShootingEffector(Effector):
 
-  UP = 6
-  DOWN = 7
-  LEFT = 8
-  RIGHT = 9
+  UP = "SHOOT_UP"
+  DOWN = "SHOOT_DOWN"
+  LEFT = "SHOOT_LEFT"
+  RIGHT = "SHOOT_RIGHT"
 
   def act(self, environment, action):
+    print(action, end="")
+
     if(action == self.UP):
       r = environment.playerShootUp()
     elif(action == self.DOWN):

@@ -157,6 +157,8 @@ class Agent:
       self.__intentions.append(getMovementDirection(playerPosition, destination))
 
   def __executeAction(self):
+    print("Actions: ", end="")
+
     for action in self.__intentions:
       if(
         action == Effector.MovementEffector.EXIT or
@@ -174,6 +176,9 @@ class Agent:
       ):
         self.__shootingEffector.act(self.__forest, action)
 
+      print(" ", end="")
+
+    print("  ", end="")
     self.__intentions = []
 
 
