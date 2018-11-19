@@ -2,9 +2,10 @@ import Effector
 from Fact import Fact
 from InferenceEngine import InferenceEngine
 import random
+from Rule import Rule
 import Sensor
 from Square import Square
-from Rule import Rule
+from utils import isReachable, getMovementDirection, getShootingDirection, UP, DOWN, LEFT, RIGHT
 
 class Agent:
 
@@ -32,7 +33,6 @@ class Agent:
 
     # BDI
     self.__belief = [] # Fact array
-    self.__desires = [] # Fact array
     self.__intentions = [] # Fact array
 
 
@@ -71,38 +71,112 @@ class Agent:
 
     self.__addBelief(fact)
 
-  def __executeAction(self, inferenceFacts):
+  def __chooseActions(self, inferenceFacts):
+    playerPosition = self.__forest.getPlayerPosition()
+    destination = False
+    safeReachablePositions = []
+    emptyPositions = []
+    emptyReachablePositions = []
+    monsterPositions = []
+    monsterReachablePositions = []
+    crevassePositions = []
+    crevasseReachablePositions = []
+
     for fact in inferenceFacts:
-      if(fact.getName() == Fact.CAN_EXIT):
-        self.__movementEffector.act(self.__forest, Effector.MovementEffector.EXIT)
+      name = fact.getName()
+      position = fact.getPosition()
 
-    r = random.randint(0, 7)
+      if(name == Fact.CAN_EXIT):
+        self.__intentions.append(Effector.MovementEffector.EXIT)
+        return
 
-    m = None
-    s = None
-    if(r == 0):
-      m = Effector.MovementEffector.UP
-    elif(r == 1):
-      m = Effector.MovementEffector.DOWN
-    elif(r == 2):
-      m = Effector.MovementEffector.LEFT
-    elif(r == 3):
-      m = Effector.MovementEffector.RIGHT
-    elif(r == 4):
-      s = Effector.ShootingEffector.UP
-    elif(r == 5):
-      s = Effector.ShootingEffector.DOWN
-    elif(r == 6):
-      s = Effector.ShootingEffector.LEFT
-    elif(r == 7):
-      s = Effector.ShootingEffector.RIGHT
+      if(
+        isReachable(playerPosition, position) and
+        name != Square.MONSTER and
+        name != Square.CREVASSE and
+        name != Fact.DEADLY and
+        name != Fact.WALL
+      ):
+        safeReachablePositions.append(position)
 
-    if(m != None):
-      self.__movementEffector.act(self.__forest, m)
+      if(fact.isInference()):
+        if(name == Square.EMPTY):
+          if(isReachable(playerPosition, position)):
+            emptyReachablePositions.append(position)
+          else:
+            emptyPositions.append(position)
+
+        elif(name == Square.MONSTER):
+          if(isReachable(playerPosition, position)):
+            monsterReachablePositions.append(position)
+          else:
+            monsterPositions.append(position)
+
+        elif(name == Square.CREVASSE):
+          if(isReachable(playerPosition, position)):
+            crevasseReachablePositions.append(position)
+          else:
+            crevassePositions.append(position)
+
+    # Go to non-visited reachable empty square first
+    if(len(emptyReachablePositions) > 0):
+      i = random.randint(0, len(emptyReachablePositions) - 1)
+      destination = emptyReachablePositions[i]
+
+    # Then, if an empty square exists, random safe movement to get there
+    elif(len(emptyPositions) > 0):
+      i = random.randint(0, len(safeReachablePositions) - 1)
+      destination = safeReachablePositions[i]
+
+    # If no empty left, try to shoot a reachable monster and go there
+    elif(len(monsterReachablePositions) > 0):
+      i = random.randint(0, len(monsterReachablePositions) - 1)
+      destination = monsterReachablePositions[i]
+      self.__intentions.append(getShootingDirection(playerPosition, destination))
+
+    # If no reachable monster, random safe movement to get there
+    elif(len(monsterPositions) > 0):
+      i = random.randint(0, len(safeReachablePositions) - 1)
+      destination = safeReachablePositions[i]
+
+    # If no empty square and no monster left, try every crevasse possible
+    elif(len(crevasseReachablePositions) > 0):
+      i = random.randint(0, len(crevasseReachablePositions) - 1)
+      destination = crevasseReachablePositions[i]
+
+    # If no reachable crevasse, random safe movement to get there
+    elif(len(crevassePositions) > 0):
+      i = random.randint(0, len(safeReachablePositions) - 1)
+      destination = safeReachablePositions[i]
+
+    # Otherwise, player is blocked
     else:
-      self.__shootingEffector.act(self.__forest, s)
+      print("Player is trapped forever...")
 
-  
+    if(destination != False):
+      self.__intentions.append(getMovementDirection(playerPosition, destination))
+
+  def __executeAction(self):
+    for action in self.__intentions:
+      if(
+        action == Effector.MovementEffector.EXIT or
+        action == Effector.MovementEffector.UP or
+        action == Effector.MovementEffector.DOWN or
+        action == Effector.MovementEffector.LEFT or
+        action == Effector.MovementEffector.RIGHT
+      ):
+        self.__movementEffector.act(self.__forest, action)
+      elif(
+        action == Effector.ShootingEffector.UP or
+        action == Effector.ShootingEffector.DOWN or
+        action == Effector.ShootingEffector.LEFT or
+        action == Effector.ShootingEffector.RIGHT
+      ):
+        self.__shootingEffector.act(self.__forest, action)
+
+    self.__intentions = []
+
+
   # ================================================================================================
   # PUBLIC FUNCTIONS
   # ================================================================================================
@@ -118,15 +192,11 @@ class Agent:
   def act(self):
     self.__observe()
 
-    self.displayBelief()
-
     inferenceFacts = self.__inferenceEngine.run(self.__belief)
 
-    print("INFERENCE FACTS: ", end="")
-    Fact.displayFacts(inferenceFacts)
+    self.__chooseActions(inferenceFacts)
 
-    # TODO: add to intentions before executing action
-    self.__executeAction(inferenceFacts)
+    self.__executeAction()
 
 
   # ================================================================================================

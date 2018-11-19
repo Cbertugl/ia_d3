@@ -53,7 +53,8 @@ class InferenceEngine:
           bestRule = applicableRules[random.randint(0, len(applicableRules) - 1)]
 
         # Apply rule
-        for f in bestRule.getConclusion(inferenceFacts):
+        newFacts = bestRule.getConclusion(inferenceFacts)
+        for f in newFacts:
           Fact.addFact(f, inferenceFacts)
 
         bestRule.mark()

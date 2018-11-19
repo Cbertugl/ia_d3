@@ -33,13 +33,15 @@ class Fact():
 
     return False
 
-  # Return True if fact is in contradiction with an inference fact in factList, False otherwise
+  # Return True if fact is in contradiction with fact in factList, False otherwise
   @staticmethod
   def hasContradiction(factList, fact):
     for f in factList:
-      if(f.isInference() and f.contradicts(fact)):
+      if(
+        (not (not f.isInference() and not fact.isInference())) and
+        f.contradicts(fact)
+      ):
         return True
-
     return False
 
   @staticmethod
@@ -126,6 +128,8 @@ class Fact():
     return False
 
   def toString(self):
+    if(self.isInference()):
+      print("inference ", end="")
     if(self.__not):
       print("not ", end="")
     if(self.__positionVariable != None):

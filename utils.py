@@ -1,3 +1,4 @@
+from Effector import MovementEffector, ShootingEffector
 import random
 
 # ==================================================================================================
@@ -20,6 +21,39 @@ def rollDice(chance):
     return True
   else:
     return False
+
+def getShootingDirection(myPosition, position):
+  if(position == UP(myPosition)):
+    return ShootingEffector.UP
+
+  elif(position == DOWN(myPosition)):
+    return ShootingEffector.DOWN
+
+  elif(position == LEFT(myPosition)):
+    return ShootingEffector.LEFT
+
+  elif(position == RIGHT(myPosition)):
+    return ShootingEffector.RIGHT
+  
+  return False
+
+def getMovementDirection(myPosition, position):
+  if(position == UP(myPosition)):
+    return MovementEffector.UP
+
+  elif(position == DOWN(myPosition)):
+    return MovementEffector.DOWN
+
+  elif(position == LEFT(myPosition)):
+    return MovementEffector.LEFT
+
+  elif(position == RIGHT(myPosition)):
+    return MovementEffector.RIGHT
+  
+  return False
+
+def isReachable(myPosition, position):
+  return(getMovementDirection(myPosition, position) != False)
 
 def X(position):
   return position

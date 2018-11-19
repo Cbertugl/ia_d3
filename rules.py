@@ -3,6 +3,10 @@ from Rule import Rule
 from Square import Square
 from utils import X, UP, DOWN, LEFT, RIGHT
 
+emptyRulePriority = 40
+monsterRulePriority = 60
+crevasseRulePriority = 80
+
 rules = [
 
   # ================================================================================================
@@ -25,28 +29,32 @@ rules = [
       Fact(Square.EMPTY, positionVariable=X),
       Fact(Fact.WALL, positionVariable=UP, notOperator=True)
     ],
-    [ Fact(Square.EMPTY, positionVariable=UP) ]
+    [ Fact(Square.EMPTY, positionVariable=UP) ],
+    emptyRulePriority
   ),
   Rule(
     [
       Fact(Square.EMPTY, positionVariable=X),
       Fact(Fact.WALL, positionVariable=DOWN, notOperator=True)
     ],
-    [ Fact(Square.EMPTY, positionVariable=DOWN) ]
+    [ Fact(Square.EMPTY, positionVariable=DOWN) ],
+    emptyRulePriority
   ),
   Rule(
     [
       Fact(Square.EMPTY, positionVariable=X),
       Fact(Fact.WALL, positionVariable=LEFT, notOperator=True)
     ],
-    [ Fact(Square.EMPTY, positionVariable=LEFT) ]
+    [ Fact(Square.EMPTY, positionVariable=LEFT) ],
+    emptyRulePriority
   ),
   Rule(
     [
       Fact(Square.EMPTY, positionVariable=X),
       Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
     ],
-    [ Fact(Square.EMPTY, positionVariable=RIGHT) ]
+    [ Fact(Square.EMPTY, positionVariable=RIGHT) ],
+    emptyRulePriority
   ),
 
   # MONSTER_POOP => MONSTER
@@ -55,28 +63,32 @@ rules = [
       Fact(Square.MONSTER_POOP, positionVariable=X),
       Fact(Fact.WALL, positionVariable=UP, notOperator=True)
     ],
-    [ Fact(Square.MONSTER, positionVariable=UP) ]
+    [ Fact(Square.MONSTER, positionVariable=UP) ],
+    monsterRulePriority
   ),
   Rule(
     [
       Fact(Square.MONSTER_POOP, positionVariable=X),
       Fact(Fact.WALL, positionVariable=DOWN, notOperator=True)
     ],
-    [ Fact(Square.MONSTER, positionVariable=DOWN) ]
+    [ Fact(Square.MONSTER, positionVariable=DOWN) ],
+    monsterRulePriority
   ),
   Rule(
     [
       Fact(Square.MONSTER_POOP, positionVariable=X),
       Fact(Fact.WALL, positionVariable=LEFT, notOperator=True)
     ],
-    [ Fact(Square.MONSTER, positionVariable=LEFT) ]
+    [ Fact(Square.MONSTER, positionVariable=LEFT) ],
+    monsterRulePriority
   ),
   Rule(
     [
       Fact(Square.MONSTER_POOP, positionVariable=X),
       Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
     ],
-    [ Fact(Square.MONSTER, positionVariable=RIGHT) ]
+    [ Fact(Square.MONSTER, positionVariable=RIGHT) ],
+    monsterRulePriority
   ),
 
   # WIND => CREVASSE
@@ -85,27 +97,31 @@ rules = [
       Fact(Square.WIND, positionVariable=X),
       Fact(Fact.WALL, positionVariable=UP, notOperator=True)
     ],
-    [ Fact(Square.CREVASSE, positionVariable=UP) ]
+    [ Fact(Square.CREVASSE, positionVariable=UP) ],
+    crevasseRulePriority
   ),
   Rule(
     [
       Fact(Square.WIND, positionVariable=X),
       Fact(Fact.WALL, positionVariable=DOWN, notOperator=True)
     ],
-    [ Fact(Square.CREVASSE, positionVariable=DOWN) ]
+    [ Fact(Square.CREVASSE, positionVariable=DOWN) ],
+    crevasseRulePriority
   ),
   Rule(
     [
       Fact(Square.WIND, positionVariable=X),
       Fact(Fact.WALL, positionVariable=LEFT, notOperator=True)
     ],
-    [ Fact(Square.CREVASSE, positionVariable=LEFT) ]
+    [ Fact(Square.CREVASSE, positionVariable=LEFT) ],
+    crevasseRulePriority
   ),
   Rule(
     [
       Fact(Square.WIND, positionVariable=X),
       Fact(Fact.WALL, positionVariable=RIGHT, notOperator=True)
     ],
-    [ Fact(Square.CREVASSE, positionVariable=RIGHT) ]
+    [ Fact(Square.CREVASSE, positionVariable=RIGHT) ],
+    crevasseRulePriority
   )
 ]

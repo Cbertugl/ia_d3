@@ -74,6 +74,7 @@ class Rule:
       fact.setPosition(position)
 
     for fact in self.__then:
+      fact.setInference()
       fact.setPosition(position)
 
   def resetPosition(self):
@@ -87,9 +88,11 @@ class Rule:
   def isPossible(self, facts):
     return(self.__getPossiblePosition(facts) != False)
 
-  # Return True if there is no contradiction between rule and facts, False otherwise
+  # Return False if every position where we apply the rule is in contradiction,
+  # False otherwise
   def hasContradiction(self, facts):
     positions = self.__getAllPossiblePosition(facts)
+    nbContradictions = 0
 
     if(len(positions) == 0):
       return False
@@ -99,10 +102,12 @@ class Rule:
 
         for thenFact in self.__then:
           if(Fact.hasContradiction(facts, thenFact)):
-            self.resetPosition()
-            return True
+            nbContradictions += 1
 
         self.resetPosition()
+
+    if(nbContradictions == len(positions)):
+      return True
 
     return False
 
@@ -113,12 +118,20 @@ class Rule:
 
     for position in positions:
       self.setPosition(position)
-      tmp = self.__then.copy()
-      for f in tmp:
-        copy = f.copy()
-        copy.resetPositionVariable()
-        copy.setInference()
-        res.append(copy)
+
+      contradiction = False
+      for thenFact in self.__then:
+        if(Fact.hasContradiction(facts, thenFact)):
+          contradiction = True
+
+      if(not contradiction):
+        tmp = self.__then.copy()
+        for f in tmp:
+          copy = f.copy()
+          copy.resetPositionVariable()
+          copy.setInference()
+          res.append(copy)
+
       self.resetPosition()
 
     return res
