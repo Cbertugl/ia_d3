@@ -53,7 +53,7 @@ class MagicForest(tk.Frame):
   # PRIVATE FUNCTIONS
   # ================================================================================================
   def __click(self):
-    self.__agent.nextAction()
+    self.__agent.act()
 
     squareValue = self.__forest.getPlayerPositionValue()
     if(squareValue == Square.CREVASSE or squareValue == Square.MONSTER ):
